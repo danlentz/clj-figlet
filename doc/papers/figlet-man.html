@@ -1,0 +1,473 @@
+<HTML>
+<HEAD>
+<TITLE>FIGlet - hosted by PLiG</TITLE>
+<META NAME="description" CONTENT="Text to ASCII art converter">
+<META NAME="keywords" CONTENT="text,ascii,ascii art,art,free,unix,msdoss,ms-dos,windows">
+</HEAD>
+
+<BODY bgcolor=ffddbb>
+
+<table border=0 width=100%>
+<tr>
+<td align=left>
+<pre>
+ _____ ___ ____ _      _   
+|  ___|_ _/ ___| | ___| |_ 
+| |_   | | |  _| |/ _ \ __|
+|  _|  | | |_| | |  __/ |_ 
+|_|   |___\____|_|\___|\__|
+</pre>
+</td>
+<td align=right>
+</td>
+</tr>
+<tr><td colspan=2 align=center>
+[ <a href="/">home</A> ] [ <a href="examples.html">font examples</A> ] [ <a href="/cgi-bin/fontdb.cgi">font database</A> ] [ <a href="contrib.html">contributions</A> ] [ <a href="figlet-man.html">FIGlet man page</A> ] [ <a href="faq.html">FAQ</A> ]
+[ <a href="figlet_history.html">FIGstory</a> ]
+
+</td></tr>
+<tr><td colspan=2>
+<hr width=80% size=1 noshade>
+</td></tr>
+</table>
+
+<PRE>
+
+
+</PRE>
+<H2>SYNOPSIS</H2><PRE>
+       <B>figlet</B> [ <B>-cklnoprstvxDELNRSWX</B> ] [ <B>-d</B> <I>fontdirectory</I> ]
+              [ <B>-f</B> <I>fontfile</I> ] [ <B>-m</B> <I>layoutmode</I> ]
+              [ <B>-w</B> <I>outputwidth</I> ] [ <B>-C</B> <I>controlfile</I> ]
+              [ <B>-I</B> <I>infocode</I> ] [ <I>message</I> ]
+
+
+
+</PRE>
+<H2>DESCRIPTION</H2><PRE>
+       <B>FIGlet</B> prints its input using  large  characters  (called  ``FIGcharac-
+       ters'')made  up  of  ordinary  screen  characters (called ``sub-charac-
+       ters'').  <B>FIGlet</B> output is generally reminiscent of the sort of  ``sig-
+       natures''  many people like to put at the end of e-mail and UseNet mes-
+       sages.  It is also reminiscent of the output of some  banner  programs,
+       although it is oriented normally, not sideways.
+
+       <B>FIGlet</B>  can  print in a variety of fonts, both left-to-right and right-
+       to-left, with adjacent FIGcharacters kerned and ``smushed'' together in
+       various  ways.  <B>FIGlet</B> fonts are stored in separate files, which can be
+       identified by the suffix ``<B>.flf</B>''.  Most  <B>FIGlet</B>  font  files  will  be
+       stored in <B>FIGlet's</B> default font directory.
+
+       <B>FIGlet</B>  can  also  use  ``control files'', which tell it to map certain
+       input characters to certain other characters, similar to  the  Unix  <B>tr</B>
+       command.  Control files can be identified by the suffix ``<B>.flc</B>''.  Most
+       <B>FIGlet</B> control files will be stored in <B>FIGlet's</B> default font directory.
+
+       You  can  store <B>FIGlet</B> fonts and control files in compressed form.  See
+       <B>COMPRESSED</B> <B>FONTS</B>.
+
+
+
+</PRE>
+<H2>USAGE</H2><PRE>
+       Just start up <B>FIGlet</B> (type ``<B>figlet</B>'') and then type whatever you want.
+       Alternatively,  pipe  a  file  or the output of another command through
+       <B>FIGlet</B>, or put input on the command line after the options.  See  <B>EXAM-</B>
+       <B>PLES</B> for other things to do.
+
+
+
+</PRE>
+<H2>OPTIONS</H2><PRE>
+       <B>FIGlet</B> reads command line options from left to right, and only the last
+       option that affects a parameter has any effect.   Almost  every  option
+       has  an  inverse,  so that, for example, if <B>FIGlet</B> is customized with a
+       shell <B>alias</B>, all the options are usually still available.
+
+       Commonly-used options are <B>-f</B>, <B>-c</B>, <B>-k</B>, <B>-t</B>, <B>-p</B> and <B>-v</B>.
+
+
+       <B>-f</B> <I>fontfile</I>
+              Select the font.  The <B>.flf</B> suffix may be left off  of  <I>fontfile</I>,
+              in which case <B>FIGlet</B> automatically appends it.  <B>FIGlet</B> looks for
+              the file first in the default font directory  and  then  in  the
+              current directory, or, if <I>fontfile</I> was given as a full pathname,
+
+       <B>-l</B>
+       <B>-r</B>
+       <B>-x</B>     These options handle the justification  of  <B>FIGlet</B>  output.   <B>-c</B>
+              centers  the  output  horizontally.   <B>-l</B> makes the output flush-
+              left.  <B>-r</B> makes it flush-right.  <B>-x</B> (default) sets the  justifi-
+              cation  according to whether left-to-right or right-to-left text
+              is selected.   Left-to-right  text  will  be  flush-left,  while
+              right-to-left  text  will be flush-right.  (Left-to-right versus
+              right-to-left text is controlled by <B>-L</B>, <B>-R</B> and <B>-X</B>.)
+
+
+       <B>-t</B>
+       <B>-w</B> <I>outputwidth</I>
+              These options control  the  <I>outputwidth</I>,  or  the  screen  width
+              <B>FIGlet</B> assumes when formatting its output.  <B>FIGlet</B> uses the <I>out-</I>
+              <I>putwidth</I> to determine when to break lines and how to center  the
+              output.  Normally, <B>FIGlet</B> assumes 80 columns so that people with
+              wide terminals won't annoy the people they e-mail <B>FIGlet</B>  output
+              to.  <B>-t</B> sets the <I>outputwidth</I> to the terminal width.  If the ter-
+              minal width cannot be determined, the  previous  <I>outputwidth</I>  is
+              retained.   <B>-w</B>  sets  the  <I>outputwidth</I> to the given integer.  An
+              <I>outputwidth</I> of 1 is a special value that tells <B>FIGlet</B>  to  print
+              each  non-space  FIGcharacter,  in  its  entirety, on a separate
+              line, no matter how wide it is.
+
+
+       <B>-p</B>
+       <B>-n</B>     These options control how  <B>FIGlet</B>  handles  newlines.   <B>-p</B>  puts
+              <B>FIGlet</B>  into  ``paragraph mode'', which eliminates some unneces-
+              sary line breaks when piping a multi-line file  through  <B>FIGlet</B>.
+              In  paragraph mode, <B>FIGlet</B> treats line breaks within a paragraph
+              as if they were merely blanks between words.  (Specifically,  <B>-p</B>
+              causes  <B>FIGlet</B> to convert any newline which is not preceded by a
+              newline and not followed by a space character into a blank.)  <B>-n</B>
+              (default)  puts  <B>FIGlet</B>  back  to normal, in which every newline
+              <B>FIGlet</B> reads causes it to produce a line break.
+
+
+       <B>-D</B>
+       <B>-E</B>     <B>-D</B> switches to the German (ISO  646-DE)  character  set.   Turns
+              `[',  `\'  and `]' into umlauted A, O and U, respectively.  `{',
+              `|' and `}' turn into the  respective  lower  case  versions  of
+              these.   `~' turns into s-z.  <B>-E</B> turns off <B>-D</B> processing.  These
+              options are deprecated,  which  means  they  probably  will  not
+              appear in the next version of <B>FIGlet</B>.
+
+
+       <B>-C</B> <I>controlfile</I>
+       <B>-N</B>     These options deal with <B>FIGlet</B> <I>controlfiles</I>.  A <I>controlfile</I> is a
+              file containing a list of commands  that  <B>FIGlet</B>  executes  each
+              time it reads a character.  These commands can map certain input
+              characters to other characters, similar to the Unix  <B>tr</B>  command
+
+       <B>-o</B>     These  options  control how <B>FIGlet</B> spaces the FIGcharacters that
+              it outputs.   <B>-s</B>  (default)  and  <B>-S</B>  cause  ``smushing''.   The
+              FIGcharacters  are  displayed as close together as possible, and
+              overlapping sub-characters are removed.  Exactly which sub-char-
+              acters  count  as  ``overlapping'' depends on the font's <I>layout-</I>
+              <I>mode</I>, which is defined by the font's author.  <B>-k</B> causes  ``kern-
+              ing''.   As many blanks as possible are removed between FIGchar-
+              acters, so that  they  touch,  but  the  FIGcharacters  are  not
+              smushed.   <B>-W</B>  makes  <B>FIGlet</B>  display all FIGcharacters at their
+              full width, which may be fixed or  variable,  depending  on  the
+              font.
+
+              The  difference  between  <B>-s</B>  and <B>-S</B> is that <B>-s</B> will not smush a
+              font whose author specified kerning or full width as the default
+              <I>layoutmode</I>, whereas <B>-S</B> will attempt to do so.
+
+              If there is no information in the font about how to smush, or if
+              the <B>-o</B> option is specified, then the FIGcharacters  are  ``over-
+              lapped''.  This means that after kerning, the first subcharacter
+              of each FIGcharacter  is  removed.   (This  is  not  done  if  a
+              FIGcharacter contains only one subcharacter.)
+
+
+       <B>-m</B> <I>layoutmode</I>
+              Specifies  an  explicit <I>layoutmode</I> between <B>1</B> and <B>63</B>.  <I>Smushmodes</I>
+              are explained  in  <I>figfont.txt</I>,  which  also  provides  complete
+              information  on  the  format  of a <B>FIGlet</B> font.  For the sake of
+              backward compatibility with versions of <B>FIGlet</B> before  2.2,  <B>-m0</B>
+              is  equivalent  to  <B>-k</B>,  <B>-m-1</B>  is  equivalent to <B>-W</B>, and <B>-m-2</B> is
+              equivalent to <B>-s</B>.  The <B>-m</B> switch is normally used only  by  font
+              designers testing the various <I>layoutmodes</I> with a new font.
+
+
+       <B>-v</B>
+       <B>-I</B> <I>infocode</I>
+              These options print various information about <B>FIGlet</B>, then exit.
+              If several of these options are given on the command line,  only
+              the  last  is  executed,  and  only after all other command-line
+              options have been dealt with.
+
+              <B>-v</B> prints version  and  copyright  information,  as  well  as  a
+              ``Usage:  ...''   line.  <B>-I</B> prints the information corresponding
+              to the given <I>infocode</I> in a consistent, reliable  (i.e.,  guaran-
+              teed to be the same in future releases) format.  <B>-I</B> is primarily
+              intended to be used by programs that use <B>FIGlet</B>.   <I>infocode</I>  can
+              be any of the following.
+
+              <B>-1</B> Normal operation (default).
+                     This  <I>infocode</I>  indicates that <B>FIGlet</B> should operate nor-
+                     mally, not giving any  informational  printout,  printing
+                     its input in the selected font.
+
+                     did not have the <B>-I</B> option.
+
+              <B>2</B> Default font directory.
+                     This  will  print  the  default  font  directory.   It is
+                     affected by the <B>-d</B> option.
+
+              <B>3</B> Font.
+                     This will print the name of the font  <B>FIGlet</B>  would  use.
+                     It is affected by the <B>-f</B> option.  This is not a filename;
+                     the ``<B>.flf</B>'' suffix is not printed.
+
+              <B>4</B> Output width.
+                     This will print the  value  <B>FIGlet</B>  would  use  for  <I>out-</I>
+                     <I>putwidth</I>,  the  number of columns wide <B>FIGlet</B> assumes the
+                     screen is.  It is affected by the <B>-w</B> and <B>-t</B> options.
+
+              <B>5</B> Supported font formats.
+                     This will list font formats supported by <B>FIGlet</B> .  Possi-
+                     ble formats are ``<B>flf2</B>'' for FIGfont Version 2 <B>.flf</B> files
+                     and ``<B>tlf2</B>'' for TOIlet <B>.tlf</B> files.
+
+
+              If <I>infocode</I> is any other positive value, <B>FIGlet</B> will simply exit
+              without printing anything.
+
+
+       <B>-L</B>
+       <B>-R</B>
+       <B>-X</B>     These  options  control  whether  <B>FIGlet</B> prints left-to-right or
+              right-to-left.  <B>-L</B> selects left-to-right printing.   <B>-R</B>  selects
+              right-to-left printing.  <B>-X</B> (default) makes <B>FIGlet</B> use whichever
+              is specified in the font file.
+
+              Once the options are read, if there are any remaining  words  on
+              the command line, they are used instead of standard input as the
+              source of text.  This feature allows shell scripts  to  generate
+              large letters without having to dummy up standard input files.
+
+              An empty argument, obtained by two sequential quotes, results in
+              a line break.
+
+
+
+</PRE>
+<H2>EXAMPLES</H2><PRE>
+       To use <B>FIGlet</B> with its default settings, simply type
+
+              <B>example%</B> <B>figlet</B>
+
+       and then type whatever you like.
+
+       To change the font, use the <B>-f</B> option, for example,
+
+              <B>example%</B> <B>figlet</B> <B>-f</B> <B>script</B>
+
+
+       Use the <B>-c</B> option if you would prefer centered output:
+
+              <B>example%</B> <B>figlet</B> <B>-c</B>
+
+
+       If <B>figlet</B> gets its input from a file, it is often a good  idea  to  use
+       <B>-p</B>:
+
+              <B>example%</B> <B>figlet</B> <B>-p</B> <B>&lt;</B> <B>myfile</B>
+
+
+       Of course, the above can be combined:
+
+              <B>example%</B> <B>figlet</B> <B>-ptk</B> <B>-f</B> <B>shadow</B> <B>&lt;</B> <B>anotherfile</B>
+              <B>example%</B> <B>figlet</B> <B>-cf</B> <B>slant</B>
+
+
+       Finally,  if  you  want  to have <B>FIGlet</B> take the input from the command
+       line instead of a file:
+
+              <B>example%</B> <B>figlet</B> <B>Hello</B> <B>world</B>
+
+
+
+   <B>Other</B> <B>Things</B> <B>to</B> <B>Try</B>
+       On many systems nice effects can be obtained from the <B>lean</B> font by pip-
+       ing it through <B>tr</B>.  Some you might want to try are the following:
+
+              <B>example%</B> <B>figlet</B> <B>-f</B> <B>lean</B> <B>|</B> <B>tr</B> <B>'</B> <B>_/'</B> <B>'</B> <B>()'</B>
+              <B>example%</B> <B>figlet</B> <B>-f</B> <B>lean</B> <B>|</B> <B>tr</B> <B>'</B> <B>_/'</B> <B>'./\\'</B>
+              <B>example%</B> <B>figlet</B> <B>-f</B> <B>lean</B> <B>|</B> <B>tr</B> <B>'</B> <B>_/'</B> <B>'</B> <B>//'</B>
+              <B>example%</B> <B>figlet</B> <B>-f</B> <B>lean</B> <B>|</B> <B>tr</B> <B>'</B> <B>_/'</B> <B>'/</B>  <B>'</B>
+
+       Similar  things  can  be done with the <B>block</B> font and many of the other
+       <B>FIGlet</B> fonts.
+
+
+
+</PRE>
+<H2>COMPRESSED FONTS</H2><PRE>
+       You can compress the fonts and controlfiles  using  the  <B>zip</B>  archiving
+       program.   Place  only  one  font  or  controlfile in each archive, and
+       rename the archive file (which will have a name ending in <B>.zip</B>) back to
+       <B>.flf</B>  or  <B>.flc</B> as the case may be.  If you don't rename the file appro-
+       priately, <B>FIGlet</B> won't be able to find it.
+
+       <B>FIGlet</B> does not care what the filename within the <B>.zip</B> archive is,  and
+       will process only the first file.
+
+       The  <B>.zip</B>  format  was chosen because tools to create and manipulate it
+       are widely available for free on many platforms.
+
+
+
+</PRE>
+<H2>THE STANDARD FONTS</H2><PRE>
+       Here are a few notes about some of the fonts provided with <I>FIGlet</I>.  You
+       can get many other font from the Web site
+       http://www.figlet.org/    This  location should also contain the latest
+       version of <B>FIGlet</B> and other related utilities.
+
+       The <I>ivrit</I> font is a right-to-left font including both Latin and  Hebrew
+       FIGcharacters;  the  Latin  characters  are those of the <I>standard</I> font.
+       The available <I>controlfiles</I> are <I>ilhebrew</I>, which maps the letters you get
+       by typing on a U.S. keyboard as if it were a Hebrew keyboard; <I>ushebrew</I>,
+       which makes a reasonable mapping from Latin letters to Hebrew ones; and
+       <I>8859-8</I>,  which  supports  mixed  Latin/Hebrew  text.   <B>Warning:</B>  <B>FIGlet</B>
+       doesn't support bidirectional text, so everything will come out  right-
+       to-left, even Latin letters.
+
+       The fonts <I>terminal</I>, <I>digital</I>, and <I>bubble</I> output the input character with
+       some decoration around it (or no decoration, in the case of  <I>terminal</I>).
+       The  characters  coded  128 to 159, which have varying interpretations,
+       are output as-is.  You can use the appropriate <I>controlfiles</I> to  process
+       Latin-2, Latin-3, or Latin-4 (but not Latin-5) text, provided your out-
+       put device has screen or printer fonts that are appropriate  for  these
+       character sets.
+
+       Two  script fonts are available: <I>script</I>, which is larger than <I>standard</I>,
+       and <I>smscript</I>, which is smaller.
+
+       The font <I>lean</I> is made up solely of `/' and `_' sub-characters; <I>block</I> is
+       a straight (non-leaning) version of it.
+
+       The  font <I>mini</I> is very small, and especially suitable for e-mail signa-
+       tures.
+
+       The font <I>banner</I> looks like the output of the <B>banner</B> program;  it  is  a
+       capitals  and  small capitals font that doesn't support the ISO Latin-1
+       extensions to plain ASCII.  It  does,  however,  support  the  Japanese
+       <I>katakana</I>  syllabary;  the  <I>controlfile</I>  <I>uskata</I>  maps the upper-case and
+       lower-case Latin letters into the 48 basic <I>katakana</I> characters, and the
+       <I>controlfile</I>  <I>jis0201</I>  handles  JIS  0201X  (JIS-Roman)  mixed Latin and
+       <I>katakana</I> text.  Furthermore, the <I>banner</I>  font  also  supports  Cyrillic
+       (Russian)  FIGcharacters;  the  <I>controlfile</I> <I>8859-5</I> supports mixed Latin
+       and Cyrillic text, the <I>controlfile</I> <I>koi8r</I> supports  the  popular  KOI8-R
+       mapping  of  mixed text, and the <I>controlfile</I> <I>moscow</I> supports a sensible
+       mapping from Latin to Cyrillic, compatible with the  <I>moscow</I>  font  (not
+       supplied).
+
+       The fonts <I>mnemonic</I> and <I>safemnem</I> support the mnemonic character set doc-
+       umented in RFC 1345.  They implement a large subset  of  Unicode  (over
+       1800  characters)  very  crudely, using ASCII-based mnemonic sequences,
+       and are good for getting a quick look at UTF-8 unicode files, using the
+       controlfile <I>utf8</I>.
+
+
+
+</PRE>
+<H2>FILES</H2><PRE>
+       <I>file</I><B>.flf</B>            <B>FIGlet</B> font file
+       <I>file</I><B>.flc</B>            <B>FIGlet</B> control file
+
+
+       determine the terminal width.
+
+       <B>FIGlet</B> also prints an explanatory message if the <B>-F</B> option is given  on
+       the  command  line.  The earlier version of <B>FIGlet</B>, version 2.0, listed
+       the available fonts when the <B>-F</B> option was given.  This option has been
+       removed  from  <B>FIGlet</B> 2.1.  It has been replaced by the <B>figlist</B> script,
+       which is part of the standard <B>FIGlet</B> package.
+
+
+
+</PRE>
+<H2>ORIGIN</H2><PRE>
+       ``<B>FIGlet</B>'' stands for ``Frank, Ian and Glenn's LETters''.  Inspired  by
+       Frank's .sig, Glenn wrote (most of) it, and Ian helped.
+
+       Most  of the standard <B>FIGlet</B> fonts were inspired by signatures on vari-
+       ous UseNet articles.  Since typically hundreds of people use  the  same
+       style of letters in their signatures, it was often not deemed necessary
+       to give credit to any one font designer.
+
+
+
+</PRE>
+<H2>BUGS</H2><PRE>
+       Very little error checking is done on font and  control  files.   While
+       <B>FIGlet</B>  tries  to  be forgiving of errors, and should (hopefully) never
+       actually crash, using an improperly-formatted  file  with  <B>FIGlet</B>  will
+       produce unpredictable output.
+
+       <B>FIGlet</B>  does not handle format characters in a very intelligent way.  A
+       tab character is converted to a blank, and vertical-tab, form-feed  and
+       carriage-return are each converted to a newline.  On many systems, tabs
+       can be handled better by piping  files  through  <B>expand</B>  before  piping
+       through <B>FIGlet</B>.
+
+       <B>FIGlet</B>  output  is  quite  ugly if it is displayed in a proportionally-
+       spaced font.  I suppose this is to be expected.
+
+       Please report any errors you find in this man page or  the  program  to
+       &lt;info@figlet.org&gt;
+
+
+</PRE>
+<H2>WEBSITE</H2><PRE>
+       You  can  get many fonts which are not in the basic <B>FIGlet</B> package from
+       the Web site http://www.figlet.org/   It should also contain the latest
+       version of <B>FIGlet</B> and other utilities related to <B>FIGlet</B>.
+
+
+<h2>AUTHORS</H2><PRE>
+
+       Glenn  Chappell did most of the work.  You can e-mail him but he is not
+       an e-mail fanatic; people who e-mail Glenn will probably  get  answers,
+       but if you e-mail his best friend:
+
+       Ian Chai, who is an e-mail fanatic, you'll get answers, endless conver-
+       sation about the mysteries of life, invitations to join some 473  mail-
+       ing  lists and a free toaster.  (Well, ok, maybe not the free toaster.)
+
+       Frank inspired this whole project with his .sig, but don't e-mail  him;
+       he's decidedly an un-e-mail-fanatic.
+
+       Gilbert  "The  Mad  Programmer" Healton added the -A option for version
+       2.1.1.  This option specified input from the command line; it is  still
+       allowed, but has no effect.
+
+       John  Cowan  added  the -o, -s, -k, -S, and -W options, and the support
+       for Unicode mapping tables, ISO 2022/HZ/Shift-JIS/UTF-8 input, and com-
+       pressed  fonts  and control files.  He also revised this documentation,
+       with a lot of input from Paul Burton.
+
+       Claudio Matsuoka added the support for .tlf files for version 2.2.4 and
+       performs random hacks and bugfixes.
+
+       As a fan of FIGlet, Christiaan Keet revised the official  FIGlet  docu-
+       mentation  and  set up the new FIGlet website at http://www.figlet.org/
+       (and the corresponding ftp://ftp.figlet.org/pub/figlet/)
+
+v2.2.5                            31 May 2012                        <B>FIGLET(6)</B>
+</PRE>
+<br>
+<br>
+<hr width=80% size=1 noshade>
+<table border=0 width=100%>
+<tr>
+<td align=left>Contact us at <a href="mailto:info@figlet.org">info@figlet.org</a></td>
+<td align=right><small> You are the 61814th person to pass through here since 2002/07/01</small></td>
+</tr>
+<tr>
+<td colspan=2 align=center>
+<pre>
+Hosted by:
+ ___ _    _  ___
+ | _ \ |  (_)/ __|
+ |  _/ |__| | (_ |
+ |_| |____|_|\___|
+ </pre>           
+ <a href="http://www.plig.net">www.plig.net</A>
+</td>
+</tr>
+</table>
+</body>
+</html>
