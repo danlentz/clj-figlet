@@ -7,7 +7,7 @@
                  No external dependencies beyond Clojure itself."
   :author       "Dan Lentz"
   :url          "https://github.com/danlentz/clj-figlet"
-  :signing      {:gpg-key "0CA466A1AB48F0C0264AF55307BAD70176C4B179"}
+  :signing      {:gpg-key "400A8A1D768AF714C4E7638670A3B82A62662999"}
   :scm          {:name "git" :url "https://github.com/danlentz/clj-figlet"}
   :license      {:name "Eclipse Public License"
                  :url  "https://www.eclipse.org/legal/epl-2.0/"}
