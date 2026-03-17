@@ -78,7 +78,8 @@
    "abcdefghijklmnopqrstuvwxyz"])
 
 (def test-fonts
-  ["standard" "small" "big" "slant" "banner" "mini" "shadow" "lean" "block"])
+  ["standard" "small" "big" "slant" "banner" "mini" "shadow" "lean" "block"
+   "doom" "script" "smscript" "smslant" "smshadow" "graffiti" "starwars"])
 
 (deftest test-vs-reference-figlet
   (doseq [font-name test-fonts]
@@ -94,10 +95,10 @@
                        "EXPECTED:\n" expected
                        "ACTUAL:\n" actual)))))))))
 
-(deftest test-render-str
-  (testing "render-str convenience function"
+(deftest test-render-by-name
+  (testing "render accepts a font name string"
     (let [expected (reference-figlet "standard" "OK")
-          actual (figlet/render-str "standard" "OK")]
+          actual (figlet/render "standard" "OK")]
       (is (= (normalize-output expected)
              (normalize-output actual))))))
 

@@ -72,7 +72,7 @@
     (let [fonts ["standard" "small" "big" "slant" "banner"
                  "mini" "shadow" "lean" "block"]]
       (doseq [f fonts]
-        (let [out (fig/render-str f "Clojure")]
+        (let [out (fig/render f "Clojure")]
           (is (not (str/blank? out))
               (str "Font " f " produced blank output"))
           (is (> (count (lines out)) 1)
@@ -84,7 +84,7 @@
 
 (deftest test-boxed-banner
   (testing "A rendered FIGure can be framed for use as a startup banner"
-    (let [art    (fig/render-str "small" "clj-figlet")
+    (let [art    (fig/render "small" "clj-figlet")
           framed (box art)]
       ;; The box adds two chars of border + two of padding on each side
       (is (str/starts-with? framed "\u250c"))
@@ -100,8 +100,8 @@
 
 (deftest test-side-by-side
   (testing "Two FIGures can be placed next to each other"
-    (let [left   (fig/render-str "standard" "AB")
-          right  (fig/render-str "slant"    "AB")
+    (let [left   (fig/render "standard" "AB")
+          right  (fig/render "slant"    "AB")
           combo  (side-by-side left right :gap 6)]
       ;; Each output line should be wider than either input alone
       (is (> (visible-width combo)
@@ -164,7 +164,7 @@
 
 (deftest test-substitution-art
   (testing "Rendered output can be post-processed with character substitution"
-    (let [art     (fig/render-str "standard" "Hi")
+    (let [art     (fig/render "standard" "Hi")
           shaded  (-> art
                       (str/replace #"[|/\\]" "#")
                       (str/replace "_" "~"))]
@@ -182,7 +182,7 @@
 
 (deftest test-centering
   (testing "FIGures can be centered within a fixed width"
-    (let [art      (fig/render-str "mini" "ok")
+    (let [art      (fig/render "mini" "ok")
           centered (center art 80)]
       (doseq [line (str/split-lines centered)]
         ;; Every non-blank line should have leading whitespace
@@ -199,9 +199,9 @@
 (deftest test-height-comparison
   (testing "Different fonts produce different vertical sizes for the same text"
     (let [word    "Go"
-          std     (fig/render-str "standard" word)
-          mini    (fig/render-str "mini" word)
-          banner  (fig/render-str "banner" word)]
+          std     (fig/render "standard" word)
+          mini    (fig/render "mini" word)
+          banner  (fig/render "banner" word)]
       ;; mini should be the most compact
       (is (< (count (lines mini))
              (count (lines std))))
@@ -272,8 +272,8 @@
 (deftest test-shadow-depth
   (testing "The shadow font produces wider output due to shadow sub-characters"
     (let [word   "Ah"
-          slim   (fig/render-str "small" word)
-          shad   (fig/render-str "shadow" word)]
+          slim   (fig/render "small" word)
+          shad   (fig/render "shadow" word)]
       ;; Shadow's extra weight makes it wider
       (is (> (visible-width shad)
              (visible-width slim))))))

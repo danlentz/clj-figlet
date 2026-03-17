@@ -8,9 +8,13 @@
 
     (require '[clj-figlet.core :as fig])
 
-    (def font (fig/load-font \"fonts/standard.flf\"))
+    ;; One-shot — pass a font name:
+    (print (fig/render \"standard\" \"Hello\"))
+
+    ;; Load once, render many — pass a font map:
+    (def font (fig/load-font \"fonts/small.flf\"))
     (print (fig/render font \"Hello\"))
-    (print (fig/render-str \"small\" \"World\"))"
+    (print (fig/render font \"World\"))"
   (:require [clj-figlet.font :as font]
             [clj-figlet.render :as render]))
 
@@ -41,7 +45,13 @@
   (font/load-font source))
 
 (defn render
-  "Renders input text as a FIGure using a previously loaded font map.
+  "Renders text as a FIGure.  The first argument may be:
+
+    - A font map (as returned by `load-font`)
+    - A font name string (e.g. \"standard\"), which loads the bundled font
+      from resources/fonts/<name>.flf
+    - Any other source accepted by `load-font` (filesystem path, File, Reader)
+
   Returns a string containing the rendered ASCII art, terminated by a
   newline.
 
@@ -55,15 +65,5 @@
   configured smushing rules.  Hardblank sub-characters are replaced with
   spaces in the final output, and trailing whitespace is trimmed from
   each line."
-  [font text]
-  (render/render font text))
-
-(defn render-str
-  "Convenience: loads a font by name from resources/fonts/ and renders text
-  in a single call.  Equivalent to:
-
-    (render (load-font (str \"fonts/\" font-name \".flf\")) text)
-
-  Font name should not include the .flf extension."
-  [font-name text]
-  (render/render-str font-name text))
+  [font-or-name text]
+  (render/render font-or-name text))

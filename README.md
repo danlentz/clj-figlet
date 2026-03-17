@@ -41,7 +41,7 @@ Then in your code:
 ```clojure
 (require '[clj-figlet.core :as fig])
 
-(print (fig/render-str "standard" "Hello!"))
+(print (fig/render "standard" "Hello!"))
 ```
 
 ```
@@ -56,11 +56,8 @@ Then in your code:
 
 ### One-shot rendering
 
-`render-str` loads a font from `resources/fonts/` by name and renders a string
-in a single call:
-
 ```clojure
-(print (fig/render-str "slant" "Clojure"))
+(print (fig/render "slant" "Clojure"))
 ```
 
 ```
@@ -74,8 +71,8 @@ in a single call:
 
 ### Load once, render many
 
-For repeated rendering with the same font, load it once and pass the font map
-to `render`:
+For repeated rendering, load the font once and pass the font map to
+`render`:
 
 ```clojure
 (def font (fig/load-font "fonts/small.flf"))
@@ -103,20 +100,29 @@ A loaded font is a plain Clojure map.  You can inspect its properties directly:
 
 ## Bundled Fonts
 
-Ten fonts ship in `resources/fonts/`:
+16 fonts ship in `resources/fonts/`:
 
 | Font | Style |
 |------|-------|
 | `standard` | The classic FIGlet default |
 | `small` | Compact version of standard |
 | `big` | Tall, bold letters |
+| `doom` | Clean, modern variant of big |
 | `slant` | Italic / slanted |
+| `smslant` | Compact italic |
+| `shadow` | Letters with a drop shadow |
+| `smshadow` | Compact shadow |
+| `script` | Cursive / handwriting |
+| `smscript` | Compact cursive |
 | `banner` | Large block letters made of `#` |
 | `block` | Heavy block style |
-| `shadow` | Letters with a drop shadow |
 | `lean` | Thin slanted style |
+| `graffiti` | Urban graffiti lettering |
+| `starwars` | Inspired by the Star Wars title crawl |
 | `mini` | Smallest — just 3 lines tall |
-| `ivrit` | Right-to-left Hebrew style |
+
+See [doc/fonts.md](doc/fonts.md) for a visual catalog with samples of
+every font.
 
 Any `.flf` FIGfont file can be loaded — the library implements the full
 FIGfont Version 2 specification.
@@ -131,7 +137,7 @@ and are redistributed under the New BSD License.  See
 
 ```clojure
 (defn splash []
-  (println (fig/render-str "small" "my-app"))
+  (println (fig/render "small" "my-app"))
   (println "  v1.0.0 — starting up..."))
 
 (splash)
@@ -153,7 +159,7 @@ choose:
 
 ```clojure
 (doseq [f ["standard" "small" "shadow"]]
-  (print (fig/render-str f "Hello")))
+  (print (fig/render f "Hello")))
 ```
 
 ```
@@ -250,7 +256,7 @@ lein repl           # Start a REPL in clj-figlet.core
 ```
 
 The test suite compares rendered output against the reference C `figlet` binary
-(install via `brew install figlet`) across 9 fonts and 24 test strings.  A
+(install via `brew install figlet`) across 16 fonts and 24 test strings.  A
 separate showcase test suite demonstrates practical usage patterns.
 
 ## Acknowledgments

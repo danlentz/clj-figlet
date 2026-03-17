@@ -166,8 +166,33 @@
 ;; Public API
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defn- as-bundled-path
+  "Expands a font name to a bundled resource path.  Adds the fonts/ prefix
+  and .flf extension only if not already present."
+  [s]
+  (let [with-ext (if (str/ends-with? s ".flf") s (str s ".flf"))]
+    (if (str/includes? with-ext "/") with-ext (str "fonts/" with-ext))))
+
+(defn- resolve-font
+  "Coerces the argument to a font map.  If already a map, returns it.
+  Otherwise delegates to `load-font`, trying the argument as-is first,
+  then as a bundled font name if the first attempt fails."
+  [font-or-name]
+  (if (map? font-or-name)
+    font-or-name
+    (try
+      (font/load-font font-or-name)
+      (catch Exception _
+        (font/load-font (as-bundled-path font-or-name))))))
+
 (defn render
-  "Renders input text as a FIGure using a previously loaded font map.
+  "Renders text as a FIGure.  The first argument may be:
+
+    - A font map (as returned by `load-font`)
+    - A font name string (e.g. \"standard\"), which loads the bundled font
+      from resources/fonts/<name>.flf
+    - Any other source accepted by `load-font` (filesystem path, File, Reader)
+
   Returns a string containing the rendered ASCII art, terminated by a
   newline.
 
@@ -181,9 +206,8 @@
   configured smushing rules.  Hardblank sub-characters are replaced with
   spaces in the final output, and trailing whitespace is trimmed from
   each line."
-  [font text]
-  (let [{:keys [hardblank height]} font
-        chars     (:chars font)
+  [font-or-name text]
+  (let [{:keys [hardblank height chars] :as font} (resolve-font font-or-name)
         empty-buf (vec (repeat height ""))
         buffer    (reduce
                     (fn [buf ch]
@@ -197,9 +221,3 @@
                       (replace-hardblanks hardblank)
                       rtrim-rows)]
     (str (str/join "\n" output) "\n")))
-
-(defn render-str
-  "Convenience: loads a font by name from resources/fonts/ and renders text.
-  Font name should not include the .flf extension."
-  [font-name text]
-  (render (font/load-font (str "fonts/" font-name ".flf")) text))

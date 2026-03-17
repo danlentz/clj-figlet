@@ -10,11 +10,11 @@ advanced patterns.  All examples assume:
 
 ## Rendering Text
 
-The simplest way to render text is `render-str`, which takes a font name
+The simplest way to render text is `render`, which accepts a font name
 and a string:
 
 ```clojure
-(print (fig/render-str "standard" "Hello!"))
+(print (fig/render "standard" "Hello!"))
 ```
 
 ```
@@ -26,12 +26,12 @@ and a string:
 ```
 
 The font name refers to a `.flf` file on the classpath under
-`resources/fonts/`.  Ten fonts are bundled with the library (see
+`resources/fonts/`.  16 fonts are bundled with the library (see
 [Bundled Fonts](#bundled-fonts) below).
 
-`render-str` loads and parses the font file on every call, which is fine
-for one-off use but wasteful if you're rendering many strings with the
-same font.
+When passed a name string, `render` loads and parses the font file on
+every call, which is fine for one-off use but wasteful if you're
+rendering many strings with the same font.
 
 
 ## Loading Fonts
@@ -120,20 +120,27 @@ sets, assoc in overrides, or pass them through any data pipeline.
 
 ## Bundled Fonts
 
-Ten fonts ship in `resources/fonts/`:
+16 fonts ship in `resources/fonts/`.  See [fonts.md](fonts.md) for a
+visual catalog with samples of every font.
 
 | Font | Height | Style |
 |------|--------|-------|
 | `standard` | 6 | The classic FIGlet default |
 | `small` | 5 | Compact version of standard |
 | `big` | 8 | Tall, bold letters |
+| `doom` | 8 | Clean, modern variant of big |
 | `slant` | 6 | Italic / slanted |
+| `smslant` | 5 | Compact italic |
+| `shadow` | 5 | Letters with a drop shadow |
+| `smshadow` | 4 | Compact shadow |
+| `script` | 7 | Cursive / handwriting |
+| `smscript` | 5 | Compact cursive |
 | `banner` | 8 | Large block letters made of `#` |
 | `block` | 8 | Heavy block style |
-| `shadow` | 5 | Letters with a drop shadow |
 | `lean` | 8 | Thin slanted style |
+| `graffiti` | 7 | Urban graffiti lettering |
+| `starwars` | 7 | Inspired by the Star Wars title crawl |
 | `mini` | 4 | Smallest — just 3 lines tall |
-| `ivrit` | 6 | Right-to-left Hebrew style |
 
 Here are a few of them rendering the same word:
 
@@ -207,7 +214,7 @@ You can see which rules a font uses:
 
 ```clojure
 (defn splash []
-  (println (fig/render-str "small" "my-app"))
+  (println (fig/render "small" "my-app"))
   (println "  v1.0.0 — starting up..."))
 ```
 
@@ -253,23 +260,21 @@ friends:
 ### Using external font files
 
 Any FIGfont file from the [FIGlet font library](http://www.figlet.org/)
-will work.  Just point `load-font` at the path:
+will work:
 
 ```clojure
-(def doom (fig/load-font "/usr/share/figlet/fonts/doom.flf"))
-(print (fig/render doom "Hey"))
+(print (fig/render "/usr/share/figlet/fonts/roman.flf" "Hey"))
 ```
 
 
 ## Reference
 
-The full API consists of three functions:
+The full API consists of two functions:
 
 | Function | Signature | Description |
 |----------|-----------|-------------|
 | `load-font` | `[source]` | Load a FIGfont file, return a font map |
-| `render` | `[font text]` | Render text using a loaded font |
-| `render-str` | `[font-name text]` | Load a bundled font and render in one call |
+| `render` | `[font-or-name text]` | Render text; accepts a font map or a font name string |
 
 For complete docstrings including all returned map keys, see the source
 or run `(doc fig/load-font)` at the REPL.
