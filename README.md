@@ -24,9 +24,8 @@ to your program.
 clj-figlet is a from-scratch implementation against the
 [FIGfont Version 2 Standard](http://www.figlet.org/) (Cowan & Burton,
 1996-97).  Fonts load as plain Clojure maps, rendering is a pure function
-from font + string to string, and the whole thing composes naturally with
-`map`, `reduce`, threading macros, and the rest of the language.  No native
-dependencies, no subprocess, no state.
+from font + string to string, and the whole thing composes naturally
+with the rest of the language.  No native dependencies, no subprocess, no state.
 
 ## Quick Start
 
@@ -154,11 +153,11 @@ and are redistributed under the New BSD License.  See
 
 ### Font comparison
 
-Same text, different personality.  The font is just data — easy to let users
-choose:
+Same text, different personality.  The font is just data — easy to let
+users choose:
 
 ```clojure
-(doseq [f ["standard" "small" "shadow"]]
+(doseq [f ["standard" "doom" "slant" "shadow" "small"]]
   (print (fig/render f "Hello")))
 ```
 
@@ -169,51 +168,28 @@ choose:
 |  _  |  __/ | | (_) |
 |_| |_|\___|_|_|\___/
 
- _  _     _ _
-| || |___| | |___
-| __ / -_) | / _ \
-|_||_\___|_|_\___/
+ _   _      _ _
+| | | |    | | |
+| |_| | ___| | | ___
+|  _  |/ _ \ | |/ _ \
+| | | |  __/ | | (_) |
+\_| |_/\___|_|_|\___/
+
+    __  __     ____
+   / / / /__  / / /___
+  / /_/ / _ \/ / / __ \
+ / __  /  __/ / / /_/ /
+/_/ /_/\___/_/_/\____/
 
  |   |      | |
  |   |  _ \ | |  _ \
  ___ |  __/ | | (   |
 _|  _|\___|_|_|\___/
-```
 
-### Countdown
-
-Fonts load once; rendering is just a function call:
-
-```clojure
-(let [font (fig/load-font "fonts/standard.flf")]
-  (doseq [s ["3" "2" "1" "Go!"]]
-    (print (fig/render font s))))
-```
-
-```
- _____
-|___ /
-  |_ \
- ___) |
-|____/
-
- ____
-|___ \
-  __) |
- / __/
-|_____|
-
- _
-/ |
-| |
-| |
-|_|
-
-  ____       _
- / ___| ___ | |
-| |  _ / _ \| |
-| |_| | (_) |_|
- \____|\___/(_)
+ _  _     _ _
+| || |___| | |___
+| __ / -_) | / _ \
+|_||_\___|_|_\___/
 ```
 
 ## FIGfont Spec Compliance
