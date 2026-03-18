@@ -32,7 +32,7 @@ with the rest of the language.  No native dependencies, no subprocess, no state.
 Add the dependency to your `project.clj`:
 
 ```clojure
-[clj-figlet "0.1.0-SNAPSHOT"]
+[clj-figlet "0.1.2"]
 ```
 
 Then in your code:
