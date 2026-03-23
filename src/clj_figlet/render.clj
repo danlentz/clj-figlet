@@ -118,13 +118,35 @@
 
 (defn- merge-row
   "Merges a buffer row with a new character row, given the smush amount.
-  The result has three regions: left (buffer only), overlap (merged), and
-  right (new character only)."
+  The result has three regions: left, overlap (merged), and right.
+
+  Normally the left region is the buffer prefix that doesn't overlap, and
+  the right region is the new character's suffix.  When smush-amount
+  exceeds the buffer width (possible when mostly-blank rows allow deep
+  overlap), the new character extends past the buffer's left edge: the
+  left region becomes the new character's overhang, the overlap spans the
+  full buffer, and the right region is the new character's suffix."
   [^String buf-row ^String char-row smush-amount h-layout hardblank h-smush-rules]
-  (let [keep-left (- (.length buf-row) smush-amount)]
-    (if (neg? keep-left)
-      ;; Empty or short buffer — trim leading columns from new character
-      (subs char-row (- smush-amount (.length buf-row)))
+  (let [bw (int (.length buf-row))
+        keep-left (- bw smush-amount)]
+    (cond
+      ;; Empty buffer (first character): trim leading blank columns
+      (zero? bw)
+      (subs char-row smush-amount)
+
+      ;; Smush exceeds buffer width: new character extends past the buffer's
+      ;; left edge.  The overhang columns are clipped (they precede column 0).
+      ;; The full buffer participates in the overlap.
+      (neg? keep-left)
+      (let [char-skip (- smush-amount bw)]
+        (str (apply str
+               (map #(merge-sub-char %1 %2 h-layout hardblank h-smush-rules)
+                    buf-row
+                    (subs char-row char-skip smush-amount)))
+             (subs char-row smush-amount)))
+
+      ;; Normal case: left (buffer only) + overlap (merged) + right (new char)
+      :else
       (str (subs buf-row 0 keep-left)
            (apply str
              (map #(merge-sub-char %1 %2 h-layout hardblank h-smush-rules)

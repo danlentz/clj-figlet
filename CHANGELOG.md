@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file.
 This change log follows the conventions of
 [keepachangelog.com](https://keepachangelog.com/).
 
+## 0.1.4 — (unreleased)
+
+### Fixed
+
+- Row merge when smush amount exceeds buffer width.  Characters whose
+  visible content concentrates on a single row (e.g. `_`) could lose that
+  content when followed by a character with mostly-blank rows, because the
+  deep overlap caused the merge to discard the buffer instead of merging it.
+  Affects universal-smushing fonts (mini, shadow, smshadow) with specific
+  character pairs like `_/` and `_\`.
+
+### Added
+
+- 7 new bundled fonts: doom, script, smscript, smslant, smshadow, graffiti,
+  starwars (16 total)
+- Smushing stress tests targeting all six rule types, width extremes, bracket
+  nesting, and dense punctuation
+- Generative tests using randomized substrings of printable ASCII, with seed
+  reported on failure for reproducibility
+- Font catalog documentation (`doc/fonts.md`)
+- User's guide (`doc/users-guide.md`)
+- `render` now accepts a font name string, a resource path, a filesystem
+  path, a File, or a font map as its first argument
+
+### Removed
+
+- `render-str` (superseded by `render` accepting font name strings directly)
+- `ivrit` font (right-to-left not yet supported)
+
 ## 0.1.0 — 2026-03-16
 
 Initial release.
