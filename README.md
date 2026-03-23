@@ -1,5 +1,8 @@
 # clj-figlet
 
+[![Clojure CI](https://github.com/danlentz/clj-figlet/actions/workflows/clojure.yml/badge.svg?branch=master)](https://github.com/danlentz/clj-figlet/actions/workflows/clojure.yml)
+[![Clojars](https://img.shields.io/clojars/v/com.github.danlentz/clj-figlet.svg)](https://clojars.org/com.github.danlentz/clj-figlet)
+
 ```
       _  _        __ _       _      _
   ___| |(_)      / _(_) __ _| | ___| |_
