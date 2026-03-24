@@ -16,6 +16,7 @@
 
   See figfont.txt §CREATING FIGFONTS for the full specification."
   (:require [clojure.java.io :as io]
+            [clojure.spec.alpha :as s]
             [clojure.string :as str]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -221,6 +222,98 @@
         lines (with-open [r (java.io.BufferedReader. reader)]
                 (vec (line-seq r)))]
     (load-font-from-lines lines)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Spec                                 [figfont.txt §CREATING FIGFONTS]
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; --- Header fields ---
+
+;; figfont.txt §Hardblank: "can be any character except a blank (space),
+;; a carriage-return, a newline (linefeed) or a null character."
+(def ^:private reserved-hardblank-chars #{\space \newline \return (char 0)})
+
+(s/def ::hardblank (s/and char? (complement reserved-hardblank-chars)))
+
+;; figfont.txt §Height: "specifies the consistent height of every
+;; FIGcharacter, measured in sub-characters."
+(s/def ::height pos-int?)
+
+;; figfont.txt §Baseline: "It is an error for Baseline to be less than 1
+;; or greater than the Height parameter."  Cross-field validation with
+;; Height is enforced on ::font below.
+(s/def ::baseline pos-int?)
+
+;; figfont.txt §Max_Length: maximum line width in the font file.
+(s/def ::max-length pos-int?)
+
+;; figfont.txt §Comment_Lines: number of comment lines after the header.
+(s/def ::comment-lines nat-int?)
+
+;; figfont.txt §Print_Direction: 0 = left-to-right, 1 = right-to-left.
+(s/def ::print-direction #{0 1})
+
+;; figfont.txt §Old_Layout: "Legal values -1 to 63"
+(s/def ::old-layout (s/int-in -1 64))
+
+;; figfont.txt §Full_Layout: "Legal values 0 to 32767"
+(s/def ::full-layout (s/nilable (s/int-in 0 32768)))
+
+;; figfont.txt §Codetag_Count: number of code-tagged characters, or nil.
+(s/def ::codetag-count (s/nilable nat-int?))
+
+;; --- Layout metadata (derived from header during parsing) ---
+
+;; figfont.txt §Layout Modes
+(s/def ::h-layout #{:full :fitting :smushing})
+(s/def ::v-layout #{:full :fitting :smushing})
+
+;; figfont.txt §Smushing Rules: six horizontal (1-6), five vertical (1-5).
+(s/def ::h-smush-rules (s/coll-of (s/int-in 1 7) :kind set?))
+(s/def ::v-smush-rules (s/coll-of (s/int-in 1 6) :kind set?))
+
+;; --- FIGcharacter data ---
+
+;; figfont.txt §BASIC DATA STRUCTURE: "there must be a consistent width
+;; for each line once the endmarks are removed."
+(s/def ::figchar
+  (s/and (s/coll-of string? :kind vector? :min-count 1)
+         #(apply = (map count %))))
+
+;; figfont.txt §REQUIRED FIGCHARACTERS: all 102 required codes must be
+;; present as keys.  Values must be valid FIGcharacters.
+(s/def ::chars
+  (s/and (s/map-of integer? ::figchar)
+         #(every? % required-codes)))
+
+;; --- Font map ---
+
+(s/def ::font
+  (s/and
+    (s/keys :req-un [::hardblank ::height ::baseline ::max-length
+                     ::old-layout ::comment-lines ::h-layout ::h-smush-rules
+                     ::v-layout ::v-smush-rules ::chars]
+            :opt-un [::print-direction ::full-layout ::codetag-count])
+    ;; Cross-field: baseline ≤ height
+    #(<= (:baseline %) (:height %))
+    ;; Cross-field: every FIGcharacter has exactly :height rows
+    (fn [{:keys [height chars]}]
+      (every? #(= height (count %)) (vals chars)))))
+
+(defn validate-font
+  "Validates a loaded font map against the FIGfont Version 2 specification
+  using clojure.spec.  Returns nil if valid, or a spec explain-data map
+  describing the violations."
+  [font]
+  (s/explain-data ::font font))
+
+(defn valid-font?
+  "Returns true if the font has no spec violations.  Accepts anything
+  `load-font` accepts: a font map, a classpath resource path, a
+  filesystem path, a File, or a Reader."
+  [font-or-source]
+  (let [font (if (map? font-or-source) font-or-source (load-font font-or-source))]
+    (s/valid? ::font font)))
 
 (defn all-fonts
   "Returns a sorted vector of bundled font names (without path or extension),

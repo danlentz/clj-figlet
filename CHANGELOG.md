@@ -59,6 +59,9 @@ width for each line once the endmarks are removed"):
 - 30 new bundled fonts (46 total), including doom, script, graffiti,
   starwars, and many contributed fonts
 - `all-fonts` function returning bundled font names
+- `validate-font` and `valid-font?` for checking fonts against the
+  FIGfont spec using clojure.spec (header fields, required characters,
+  row structure)
 - `render` now accepts a font name string, a resource path, a filesystem
   path, a File, or a font map as its first argument
 - Smushing stress tests targeting all six rule types, width extremes,

@@ -73,3 +73,17 @@
   Any of these names can be passed directly to `render`."
   []
   (font/all-fonts))
+
+(defn validate-font
+  "Validates a loaded font map against the FIGfont Version 2 specification
+  using clojure.spec.  Returns nil if valid, or a spec explain-data map
+  describing the violations."
+  [font]
+  (font/validate-font font))
+
+(defn valid-font?
+  "Returns true if the font has no spec violations.  Accepts anything
+  `load-font` accepts: a font map, a classpath resource path, a
+  filesystem path, a File, or a Reader."
+  [font-or-source]
+  (font/valid-font? font-or-source))

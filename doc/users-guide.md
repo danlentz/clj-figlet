@@ -268,12 +268,15 @@ will work:
 
 ## Reference
 
-The full API consists of two functions:
+The full API:
 
 | Function | Signature | Description |
 |----------|-----------|-------------|
 | `load-font` | `[source]` | Load a FIGfont file, return a font map |
 | `render` | `[font-or-name text]` | Render text; accepts a font map or a font name string |
+| `all-fonts` | `[]` | Returns sorted vector of bundled font names |
+| `validate-font` | `[font]` | Validate a font map against the spec; returns nil or explain-data |
+| `valid-font?` | `[font-or-source]` | Returns true if the font has no spec violations |
 
 For complete docstrings including all returned map keys, see the source
 or run `(doc fig/load-font)` at the REPL.

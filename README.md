@@ -102,6 +102,9 @@ A loaded font is a plain Clojure map.  You can inspect its properties directly:
 (:h-layout font)      ;=> :smushing
 (:h-smush-rules font) ;=> #{1 2 3 4}
 (count (:chars font))  ;=> 229
+
+(fig/valid-font? font)     ;=> true
+(fig/validate-font font)  ;=> nil (when valid)
 ```
 
 ## Bundled Fonts
