@@ -1,6 +1,6 @@
 # Bundled Font Catalog
 
-clj-figlet ships with 46 FIGfont files in `resources/fonts/`.  Use any
+clj-figlet ships with 45 FIGfont files in `resources/fonts/`.  Use any
 font by name:
 
 ```clojure
@@ -120,16 +120,6 @@ Glenn Chappell, 1993.
                  \|
 ```
 
-### smscript
-
-Glenn Chappell, 1993.  Compact version of script.
-
-```
- ,           ,   _   ,_  o    _|_
-/ \_/|/|/|  / \_/   /  | | |/\_|
- \/  | | |_/ \/ \__/   |/|/|_/ |_/
-                          (|
-```
 
 
 ## Banner Family
@@ -648,7 +638,6 @@ the full license text.
 | shadow | Glenn Chappell |
 | smshadow | Glenn Chappell |
 | script | Glenn Chappell |
-| smscript | Glenn Chappell |
 | banner | Ryan Youck |
 | Banner3-D | Merlin Greywolf |
 | starwars | Ryan Youck |

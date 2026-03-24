@@ -134,7 +134,6 @@ visual catalog with samples of every font.
 | `shadow` | 5 | Letters with a drop shadow |
 | `smshadow` | 4 | Compact shadow |
 | `script` | 7 | Cursive / handwriting |
-| `smscript` | 5 | Compact cursive |
 | `banner` | 8 | Large block letters made of `#` |
 | `block` | 8 | Heavy block style |
 | `lean` | 8 | Thin slanted style |

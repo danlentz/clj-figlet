@@ -106,7 +106,7 @@ A loaded font is a plain Clojure map.  You can inspect its properties directly:
 
 ## Bundled Fonts
 
-46 fonts ship in `resources/fonts/`.  Here are a few highlights:
+45 fonts ship in `resources/fonts/`.  Here are a few highlights:
 
 **standard** — the classic
 ```
@@ -246,7 +246,7 @@ DDDDDDDDDDDDD           ooooooooooo   hhhhhhh     hhhhhhh
 ```
 
 See [doc/fonts.md](doc/fonts.md) for the complete visual catalog of all
-46 fonts.
+45 fonts.
 
 Any `.flf` FIGfont file can be loaded — the library implements the full
 FIGfont Version 2 specification.
