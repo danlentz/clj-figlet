@@ -149,6 +149,18 @@
 ;; Reference Comparison — Generative
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(def ^:const +generative-reps+
+  "Number of random strings generated per font per category."
+  50)
+
+(def ^:const +min-length+
+  "Minimum length of generated test strings."
+  10)
+
+(def ^:const +max-length+
+  "Maximum length of generated test strings."
+  32)
+
 (def ^:private pangram
   (vec "The Quick, Brown Fox Jumps Over The Lazy Dog!"))
 
@@ -205,13 +217,13 @@
   (doseq [font-name (fig/all-fonts)]
 
     (testing "Shuffled pangram substrings (mixed case, punctuation, spaces)"
-      (dotimes [_ 5]
-        (let [text (shuffled-text pangram (+ 6 (rand-int 12)))]
+      (dotimes [_ +generative-reps+]
+        (let [text (shuffled-text pangram (+ +min-length+ (rand-int (- +max-length+ +min-length+))))]
           (testing (str font-name ": pangram shuffle " (pr-str text))
             (assert-matches-reference font-name text)))))
 
     (testing "Random printable ASCII (full character set)"
-      (dotimes [_ 5]
-        (let [text (random-text printable-ascii (+ 4 (rand-int 10)))]
+      (dotimes [_ +generative-reps+]
+        (let [text (random-text printable-ascii (+ +min-length+ (rand-int (- +max-length+ +min-length+))))]
           (testing (str font-name ": ascii random " (pr-str text))
-          (assert-matches-reference font-name text)))))))
+            (assert-matches-reference font-name text)))))))

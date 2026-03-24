@@ -352,14 +352,14 @@ spec lives in `doc/papers/figfont.txt`.
 ## Development
 
 ```bash
-lein test           # Run all tests (correctness + showcase)
+lein test           # Run all tests
 lein repl           # Start a REPL in clj-figlet.core
 ```
 
 The test suite compares rendered output against the reference C `figlet` binary
-(install via `brew install figlet`) across all 46 bundled fonts using common
+(install via `brew install figlet`) across all 45 bundled fonts using common
 strings, smushing stress cases, regression cases, and randomized generative
-tests.  A separate showcase test suite demonstrates practical usage patterns.
+tests (50 random strings per font per category, 6000+ assertions per run).
 
 ## Acknowledgments
 
