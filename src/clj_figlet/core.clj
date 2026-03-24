@@ -67,3 +67,9 @@
   each line."
   [font-or-name text]
   (render/render font-or-name text))
+
+(defn all-fonts
+  "Returns a sorted vector of bundled font names (without path or extension).
+  Any of these names can be passed directly to `render`."
+  []
+  (font/all-fonts))

@@ -105,8 +105,12 @@
        :v-layout :full     :v-smush-rules #{}}
 
       :else
+      ;; The C figlet masks old_layout with 31 (bits 0-4, rules 1-5),
+      ;; excluding bit 5 (rule 6, hardblank smushing).  When the result
+      ;; is zero, this yields universal smushing.  See figlet.c readfont:
+      ;;   smushmode = (old_layout & 31) | SM_SMUSH;
       {:h-layout      :smushing
-       :h-smush-rules (extract-rules old-layout h-smush-bits)
+       :h-smush-rules (extract-rules (bit-and old-layout 31) h-smush-bits)
        :v-layout      :full
        :v-smush-rules #{}})))
 
@@ -218,3 +222,17 @@
         lines (with-open [r (java.io.BufferedReader. reader)]
                 (vec (line-seq r)))]
     (load-font-from-lines lines)))
+
+(defn all-fonts
+  "Returns a sorted vector of bundled font names (without path or extension),
+  discovered from the fonts/ directory on the classpath."
+  []
+  (->> (io/resource "fonts")
+       io/file
+       file-seq
+       (keep (fn [^java.io.File f]
+               (let [name (.getName f)]
+                 (when (str/ends-with? name ".flf")
+                   (str/replace name ".flf" "")))))
+       sort
+       vec))
