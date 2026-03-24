@@ -7,8 +7,10 @@ font by name:
 (fig/render "doom" "Hello")
 ```
 
-All fonts are from the [FIGlet](http://www.figlet.org/) distribution
-(New BSD License).  See `resources/fonts/NOTICE`.
+Most fonts originate from the [FIGlet](http://www.figlet.org/)
+distribution; others were contributed by independent designers.  See
+`resources/fonts/NOTICE` for per-font attribution and the New BSD
+License under which the FIGlet distribution fonts are redistributed.
 
 
 ## Standard Family
@@ -107,6 +109,8 @@ ___/_|_|_|___/_| _|\__,_|\__,_|\___/ \_/\_/
 
 ### script
 
+Glenn Chappell, 1993.
+
 ```
                o
  ,   __   ,_        _ _|_
@@ -117,6 +121,8 @@ ___/_|_|_|___/_| _|\__,_|\__,_|\___/ \_/\_/
 ```
 
 ### smscript
+
+Glenn Chappell, 1993.  Compact version of script.
 
 ```
  ,           ,   _   ,_  o    _|_
@@ -620,3 +626,62 @@ Author unknown.
 8 8888    ,88' 8 8888   `8b.   ` 8888     ,88' .888888888. `88888.  8 8888    ,o88P'
 8 888888888P   8 8888     `88.    `8888888P'  .8'       `8. `88888. 8 888888888P'
 ```
+
+
+## Attributions
+
+All fonts carry their own attribution in their `.flf` header comments.
+The fonts from the official FIGlet distribution are redistributed under
+the New BSD License.  Contributed fonts are included with implicit or
+explicit permission per their header comments.  See
+`resources/fonts/NOTICE` for the complete per-font author listing and
+the full license text.
+
+| Font | Author |
+|------|--------|
+| standard | Glenn Chappell & Ian Chai |
+| small | Glenn Chappell |
+| big | Glenn Chappell (Greek chars: Bruce Jakeway) |
+| doom | Frans P. de Vries |
+| slant | Glenn Chappell |
+| smslant | Glenn Chappell |
+| shadow | Glenn Chappell |
+| smshadow | Glenn Chappell |
+| script | Glenn Chappell |
+| smscript | Glenn Chappell |
+| banner | Ryan Youck |
+| Banner3-D | Merlin Greywolf |
+| starwars | Ryan Youck |
+| block | Glenn Chappell |
+| lean | Glenn Chappell |
+| mini | Glenn Chappell |
+| digital | Glenn Chappell (Latin extensions: John Cowan) |
+| Bubble | Glenn Chappell (Latin extensions: John Cowan) |
+| Bigfig | Glenn Chappell |
+| 3d | xero |
+| 4Max | Philip Menke |
+| Acrobatic | Randy Ransom |
+| AMC-Tubes | Lester |
+| amcslder | Lester |
+| Arrows | Ron Fritz |
+| Basic | Craig O'Flaherty |
+| Bear | Myflix |
+| Blocks | Myflix |
+| Bloody | patorjk |
+| Bolger | Mike Rosulek |
+| Broadway | unknown |
+| broadway_kb | Myflix |
+| Bulbhead | Jef Poskanzer |
+| Chunky | Chris Gill |
+| Colossal | Jonathon |
+| Crawford | unknown |
+| Cyberlarge | Lennert Stock (FIGlet conversion: Kent Nassen) |
+| Cybermedium | Lennert Stock (FIGlet conversion: Kent Nassen) |
+| DANC4 | Richard Sabey |
+| dancingfont | Myflix |
+| Doh | Curtis Wanner |
+| eftiwall | Michel Eftimakis |
+| flowerpower | Myflix & LG Beard |
+| ghost | Myflix |
+| graffiti | Leigh Purdie & Tim Maggio |
+| Roman | Nick Miners |
