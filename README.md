@@ -257,68 +257,6 @@ The bundled fonts are from the [FIGlet](http://www.figlet.org/) distribution
 and are redistributed under the New BSD License.  See
 `resources/fonts/NOTICE` for the full license text.
 
-## Examples
-
-### CLI splash screen
-
-```clojure
-(defn splash []
-  (println (fig/render "small" "my-app"))
-  (println "  v1.0.0 — starting up..."))
-
-(splash)
-```
-
-```
- _ __ _  _ ___ __ _ _ __ _ __
-| '  \ || |___/ _` | '_ \ '_ \
-|_|_|_\_, |   \__,_| .__/ .__/
-      |__/         |_|  |_|
-
-  v1.0.0 — starting up...
-```
-
-### Font comparison
-
-Same text, different personality.  The font is just data — easy to let
-users choose:
-
-```clojure
-(doseq [f ["standard" "doom" "slant" "shadow" "small"]]
-  (print (fig/render f "Hello")))
-```
-
-```
- _   _      _ _
-| | | | ___| | | ___
-| |_| |/ _ \ | |/ _ \
-|  _  |  __/ | | (_) |
-|_| |_|\___|_|_|\___/
-
- _   _      _ _
-| | | |    | | |
-| |_| | ___| | | ___
-|  _  |/ _ \ | |/ _ \
-| | | |  __/ | | (_) |
-\_| |_/\___|_|_|\___/
-
-    __  __     ____
-   / / / /__  / / /___
-  / /_/ / _ \/ / / __ \
- / __  /  __/ / / /_/ /
-/_/ /_/\___/_/_/\____/
-
- |   |      | |
- |   |  _ \ | |  _ \
- ___ |  __/ | | (   |
-_|  _|\___|_|_|\___/
-
- _  _     _ _
-| || |___| | |___
-| __ / -_) | / _ \
-|_||_\___|_|_\___/
-```
-
 ## FIGfont Spec Compliance
 
 The implementation follows the [FIGfont Version 2
