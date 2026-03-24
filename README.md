@@ -91,20 +91,19 @@ For repeated rendering, load the font once and pass the font map to
 `load-font` accepts a classpath resource path, a filesystem path, a `File`, or
 a `Reader`.
 
-### Font metadata
+### Fonts are data
 
-A loaded font is a plain Clojure map.  You can inspect its properties directly:
+A loaded font is a plain Clojure map.  Inspect, validate, modify, and
+write back:
 
 ```clojure
-(:height font)        ;=> 5
-(:baseline font)      ;=> 4
-(:hardblank font)     ;=> \$
-(:h-layout font)      ;=> :smushing
-(:h-smush-rules font) ;=> #{1 2 3 4}
-(count (:chars font))  ;=> 229
-
+(:height font)             ;=> 5
+(:h-layout font)           ;=> :smushing
+(count (:chars font))      ;=> 229
 (fig/valid-font? font)     ;=> true
-(fig/validate-font font)  ;=> nil (when valid)
+
+(fig/all-fonts)            ;=> ["3d" "4Max" "Acrobatic" ...]
+(fig/write-font font "my-font.flf")
 ```
 
 ## Bundled Fonts
