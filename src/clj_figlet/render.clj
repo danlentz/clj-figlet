@@ -13,10 +13,12 @@
                  the single junction point where visible sub-characters
                  meet.
 
-  The merge of each row is expressed as three string regions — left
-  (buffer only), overlap (merged), right (new character only) — rather
-  than a column-by-column loop, so the hot path stays in Clojure string
-  operations without mutable state.
+  The per-row merge (`addchar-row`) is a direct translation of the C
+  figlet's `addchar` function, using a mutable char array to replicate
+  C string semantics (NUL truncation, in-place writes, STRCAT at
+  STRLEN).  This is the one place in the codebase where Java interop is
+  used for correctness rather than convenience — immutable strings
+  cannot express NUL-terminated truncation.
 
   Hardblanks are opaque during layout (they prevent characters from
   sliding through) but are replaced with spaces in the final output.
@@ -32,35 +34,24 @@
 
 (defn- figchar-width
   "Returns the width of a FIGcharacter as the length of its first row,
-  matching the C figlet's `currcharwidth = STRLEN(currchar[0])`.  This
-  governs the smush cap and accumulated buffer width."
+  matching the C figlet's `currcharwidth = STRLEN(currchar[0])`."
   [fig-char]
   (if (seq fig-char) (count (first fig-char)) 0))
 
-
 (defn- pad-right
   "Pads string s with trailing spaces to width n."
-  [^String s n]
-  (let [pad (- n (.length s))]
+  [s n]
+  (let [pad (- n (count s))]
     (if (pos? pad)
       (str s (apply str (repeat pad \space)))
       s)))
 
-(defn- trailing-spaces
-  "Returns the number of trailing space characters in s."
-  [^String s]
-  (let [n (.length s)]
-    (loop [i (dec n)]
-      (if (and (>= i 0) (= (.charAt s i) \space))
-        (recur (dec i))
-        (- n (inc i))))))
-
 (defn- leading-spaces
   "Returns the number of leading space characters in s."
-  [^String s]
-  (let [n (.length s)]
+  [s]
+  (let [n (count s)]
     (loop [i 0]
-      (if (and (< i n) (= (.charAt s i) \space))
+      (if (and (< i n) (= (nth s i) \space))
         (recur (inc i))
         i))))
 
@@ -68,58 +59,56 @@
 ;; Overlap / Smush-Amount Computation  [figfont.txt §Layout Modes, §Hardblanks]
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(def ^:private nul
+  "Sentinel character representing C's NUL string terminator."
+  (char 0))
+
 (defn- last-visible-pos
   "Returns the index of the last non-space character in s, scanning from
   the end.  Matches the C figlet's linebd scan exactly:
     for (linebd=STRLEN(s); ch1=s[linebd], (linebd>0&&(!ch1||ch1==' ')); linebd--)
   Returns 0 for empty and all-space strings (C starts at STRLEN and stops
   at position 0)."
-  [^String s]
-  (let [n (.length s)]
+  [s]
+  (let [n (count s)]
     (loop [i n]
       (if (and (> i 0)
-               (let [c (if (< i n) (.charAt s i) (char 0))]
-                 (or (= c (char 0)) (= c \space))))
+               (let [c (if (< i n) (nth s i) nul)]
+                 (or (= c nul) (= c \space))))
         (recur (dec i))
         i))))
 
 (defn- row-smush-amount
   "Computes the smush amount for a single row pair using the C figlet's
-  formula: `amt = charbd + outlinelen - 1 - linebd`, where linebd and
-  charbd are the last and first non-space positions respectively, and
-  outlinelen is row 0's width (buf-width).  See figlet.c smushamt().
-
-  `prev-width` and `char-width` are the original FIGcharacter widths;
-  the C figlet disables smushing when either is less than 2."
-  [^String buf-row ^String char-row buf-width prev-width char-width
+  formula: `amt = charbd + outlinelen - 1 - linebd`.  See figlet.c
+  smushamt()."
+  [buf-row char-row buf-width prev-width char-width
    h-layout hardblank h-smush-rules]
   (let [linebd (last-visible-pos buf-row)
         charbd (leading-spaces char-row)
-        amt    (+ charbd (- buf-width 1) (- linebd))]
-    ;; The C figlet checks ch1 (buffer's last visible) BEFORE consulting
-    ;; smushem.  Blank buffer rows always get +1, unconditionally.
-    (let [ch1 (when (< linebd (.length buf-row)) (.charAt buf-row linebd))
-          ch2 (when (< charbd (.length char-row)) (.charAt char-row charbd))]
-      (cond
-        ;; Buffer row blank — extra column always granted
-        (or (nil? ch1) (= ch1 \space))
-        (inc amt)
+        amt    (+ charbd (- buf-width 1) (- linebd))
+        ch1    (when (< linebd (count buf-row)) (nth buf-row linebd))
+        ch2    (when (< charbd (count char-row)) (nth char-row charbd))]
+    (cond
+      ;; Buffer row blank — extra column always granted
+      (or (nil? ch1) (= ch1 \space))
+      (inc amt)
 
-        ;; Char row blank — no visible char to smush
-        (nil? ch2)
-        amt
+      ;; Char row blank — no visible char to smush
+      (nil? ch2)
+      amt
 
-        ;; Width < 2 or not smushing — no junction smush
-        (or (not= h-layout :smushing)
-            (< prev-width 2)
-            (< char-width 2))
-        amt
+      ;; Width < 2 or not smushing — no junction smush
+      (or (not= h-layout :smushing)
+          (< prev-width 2)
+          (< char-width 2))
+      amt
 
-        ;; Both visible — try smushing at the junction
-        (smushing/h-try-smush (char ch1) (char ch2) hardblank h-smush-rules)
-        (inc amt)
+      ;; Both visible — try smushing at the junction
+      (smushing/h-try-smush ch1 ch2 hardblank h-smush-rules)
+      (inc amt)
 
-        :else amt))))
+      :else amt)))
 
 (defn- compute-smush-amount
   "Computes how many columns a FIGcharacter can be moved left to overlap with
@@ -140,39 +129,32 @@
 ;; Character Appending                           [figfont.txt §Layout Modes]
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; addchar-row is a direct translation of the C figlet's addchar per-row
+;; logic.  It uses a mutable char array because the C code relies on NUL-
+;; terminated string semantics: writing '\0' to a position truncates the
+;; string, and STRCAT appends at the first '\0'.  There is no idiomatic
+;; Clojure equivalent for this behavior.  See figlet.c addchar().
+
 (defn- addchar-row
-  "Direct translation of the C figlet's addchar per-row logic (left-to-right).
-  Uses a char array to replicate C string semantics (NUL truncation, in-place
-  writes, STRCAT at STRLEN).  See figlet.c addchar()."
   [^String buf-row ^String char-row outlinelen smush-amount
    prev-width char-width h-layout hardblank h-smush-rules]
   (let [buf-len   (.length buf-row)
         char-len  (.length char-row)
         cap       (+ (max buf-len outlinelen) char-len 1)
-        ^chars wb (char-array cap (char 0))]
-    ;; Copy existing output row into working buffer (NUL-terminated by init)
+        ^chars wb (char-array cap nul)]
     (.getChars buf-row 0 buf-len wb 0)
-    ;; Smush overlap: write into positions [outlinelen-smush, outlinelen-1]
     (dotimes [k smush-amount]
       (let [column (max 0 (+ (- outlinelen smush-amount) k))
             lch    (aget wb column)
-            rch    (if (< k char-len) (.charAt char-row k) (char 0))]
-        ;; Inline smushem — matches figlet.c smushem() exactly:
-        ;;   if (lch==' ') return rch;
-        ;;   if (rch==' ') return lch;
-        ;;   if (previouscharwidth<2 || currcharwidth<2) return '\0';
-        ;;   if ((smushmode & SM_SMUSH)==0) return '\0';
-        ;;   [then universal or controlled smushing]
+            rch    (if (< k char-len) (.charAt char-row k) nul)]
         (aset wb column
               (char (cond
                       (= lch \space) rch
                       (= rch \space) lch
-                      (or (< prev-width 2) (< char-width 2)) (char 0)
-                      (not= h-layout :smushing) (char 0)
-                      :else
-                      (or (smushing/h-try-smush lch rch hardblank h-smush-rules)
-                          (char 0)))))))
-    ;; Find STRLEN (first NUL) and STRCAT the remainder
+                      (or (< prev-width 2) (< char-width 2)) nul
+                      (not= h-layout :smushing) nul
+                      :else (or (smushing/h-try-smush lch rch hardblank h-smush-rules)
+                                nul))))))
     (let [strlen   (loop [i 0]
                      (if (or (>= i cap) (= (aget wb i) (char 0))) i (recur (inc i))))
           tail-len (if (> char-len smush-amount) (- char-len smush-amount) 0)
@@ -184,16 +166,13 @@
 (defn- append-figchar
   "Appends a FIGcharacter to the output buffer, applying the appropriate
   layout mode.  Buffer is a vector of strings (one per row).  When the buffer
-  is empty, leading blank columns are trimmed from the first character.
-  `prev-width` is the original width of the previous FIGcharacter (0 for
-  the first character); the C figlet disables smushing when either adjacent
-  character is narrower than 2 columns."
+  is empty, leading blank columns are trimmed from the first character."
   [buffer fig-char prev-width {:keys [hardblank height h-layout h-smush-rules]}]
-  (let [buffer        (or buffer (vec (repeat height "")))
-        buf-width     (count (first buffer))
-        char-width    (figchar-width fig-char)
-        smush-amount  (compute-smush-amount buffer fig-char prev-width
-                                            hardblank h-layout h-smush-rules)]
+  (let [buffer       (or buffer (vec (repeat height "")))
+        buf-width    (count (first buffer))
+        char-width   (figchar-width fig-char)
+        smush-amount (compute-smush-amount buffer fig-char prev-width
+                                           hardblank h-layout h-smush-rules)]
     (mapv (fn [buf-row char-row]
             (addchar-row buf-row char-row buf-width smush-amount
                          prev-width char-width

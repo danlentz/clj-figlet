@@ -122,12 +122,13 @@
   "Removes trailing endmark characters from a FIGcharacter line.
   The endmark is the last character on the line; the entire trailing run
   of that character is stripped.  See figfont.txt §Basic Data Structure."
-  [^String s]
-  (if (.isEmpty s)
+  [s]
+  (if (empty? s)
     s
-    (let [endmark (.charAt s (dec (.length s)))]
-      (loop [i (dec (.length s))]
-        (if (and (>= i 0) (= (.charAt s i) endmark))
+    (let [endmark (last s)
+          n       (count s)]
+      (loop [i (dec n)]
+        (if (and (>= i 0) (= (nth s i) endmark))
           (recur (dec i))
           (subs s 0 (inc i)))))))
 
@@ -174,11 +175,9 @@
         {:keys [height comment-lines]} header
         layout     (interpret-layout header)
         data-lines (drop (inc comment-lines) lines)
-        ;; First 102 × height lines are required characters, in order
         req-data   (take (* (count required-codes) height) data-lines)
         req-chars  (zipmap required-codes
                            (map parse-figchar-lines (partition height req-data)))
-        ;; Remaining lines are code-tagged characters
         tag-chars  (parse-code-tagged
                      (drop (* (count required-codes) height) data-lines)
                      height)]
