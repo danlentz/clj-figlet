@@ -45,9 +45,9 @@
   (when-not (str/starts-with? line "flf2a")
     (throw (ex-info "Invalid FIGfont signature" {:line line})))
   (let [hardblank (nth line 5)
-        params    (str/split (str/trim (subs line 6)) #"\s+")
+        params    (-> line (subs 6) str/trim (str/split #"\s+"))
         [height baseline max-length old-layout comment-lines
-         print-direction full-layout codetag-count] (map #(Long/parseLong %) params)]
+         print-direction full-layout codetag-count] (map parse-long params)]
     {:hardblank       hardblank
      :height          height
      :baseline        baseline
@@ -143,7 +143,7 @@
   Supports decimal, octal (0-prefixed), and hex (0x-prefixed) formats.
   See figfont.txt §CODE TAGGED FIGCHARACTERS."
   [line]
-  (Long/decode (first (str/split (str/trim line) #"\s+"))))
+  (-> line str/trim (str/split #"\s+") first Long/decode))
 
 (def ^:private required-codes
   "Character codes that must appear in every FIGfont, in order.
@@ -232,6 +232,6 @@
        (keep (fn [^java.io.File f]
                (let [name (.getName f)]
                  (when (str/ends-with? name ".flf")
-                   (str/replace name ".flf" "")))))
+                   (subs name 0 (- (count name) 4))))))
        sort
        vec))

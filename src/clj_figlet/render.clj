@@ -119,11 +119,12 @@
     0
     (let [buf-width  (count (first buffer))
           char-width (figchar-width fig-char)]
-      (max 0 (min char-width
-                   (reduce min Integer/MAX_VALUE
-                           (map #(row-smush-amount %1 %2 buf-width prev-width char-width
-                                                   h-layout hardblank h-smush-rules)
-                                buffer fig-char)))))))
+      (->> (map #(row-smush-amount %1 %2 buf-width prev-width char-width
+                                      h-layout hardblank h-smush-rules)
+                buffer fig-char)
+           (reduce min Integer/MAX_VALUE)
+           (min char-width)
+           (max 0)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Character Appending                           [figfont.txt §Layout Modes]
