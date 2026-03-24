@@ -67,3 +67,37 @@
   each line."
   [font-or-name text]
   (render/render font-or-name text))
+
+(defn all-fonts
+  "Returns a sorted vector of bundled font names (without path or extension).
+  Any of these names can be passed directly to `render`."
+  []
+  (font/all-fonts))
+
+(defn write-font
+  "Serializes a font map to FIGfont Version 2 format and writes it to `dest`.
+  `dest` may be anything accepted by `clojure.java.io/writer` (a path string,
+  File, OutputStream, etc.).
+
+  The font is validated against the spec before writing; throws ex-info if
+  validation fails.
+
+  Options (as keyword args):
+    :comments  — vector of comment lines (default: [\"Written by clj-figlet\"])
+    :endmark   — endmark character (default: \\@)"
+  [font dest & opts]
+  (apply font/write-font font dest opts))
+
+(defn validate-font
+  "Validates a loaded font map against the FIGfont Version 2 specification
+  using clojure.spec.  Returns nil if valid, or a spec explain-data map
+  describing the violations."
+  [font]
+  (font/validate-font font))
+
+(defn valid-font?
+  "Returns true if the font has no spec violations.  Accepts anything
+  `load-font` accepts: a font map, a classpath resource path, a
+  filesystem path, a File, or a Reader."
+  [font-or-source]
+  (font/valid-font? font-or-source))

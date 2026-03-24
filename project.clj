@@ -1,4 +1,4 @@
-(defproject com.github.danlentz/clj-figlet "0.1.3"
+(defproject com.github.danlentz/clj-figlet "0.1.4"
   :description  "A native Clojure re-implementation of FIGlet, the classic
                  ASCII art text renderer.  Parses FIGfont Version 2 font
                  files (Cowan & Burton, 1996-97), implements all six

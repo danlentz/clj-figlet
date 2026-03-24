@@ -134,7 +134,6 @@ visual catalog with samples of every font.
 | `shadow` | 5 | Letters with a drop shadow |
 | `smshadow` | 4 | Compact shadow |
 | `script` | 7 | Cursive / handwriting |
-| `smscript` | 5 | Compact cursive |
 | `banner` | 8 | Large block letters made of `#` |
 | `block` | 8 | Heavy block style |
 | `lean` | 8 | Thin slanted style |
@@ -269,12 +268,16 @@ will work:
 
 ## Reference
 
-The full API consists of two functions:
+The full API:
 
 | Function | Signature | Description |
 |----------|-----------|-------------|
 | `load-font` | `[source]` | Load a FIGfont file, return a font map |
 | `render` | `[font-or-name text]` | Render text; accepts a font map or a font name string |
+| `all-fonts` | `[]` | Returns sorted vector of bundled font names |
+| `write-font` | `[font dest & opts]` | Write a font map to a `.flf` file (validates first) |
+| `validate-font` | `[font]` | Validate a font map against the spec; returns nil or explain-data |
+| `valid-font?` | `[font-or-source]` | Returns true if the font has no spec violations |
 
 For complete docstrings including all returned map keys, see the source
 or run `(doc fig/load-font)` at the REPL.

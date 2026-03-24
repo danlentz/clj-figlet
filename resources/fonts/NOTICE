@@ -3,6 +3,54 @@ distribution (http://www.figlet.org/) and are redistributed under the terms
 of the New BSD License reproduced below.  Each font file also contains its
 own attribution in its header comment block.
 
+Font Authors:
+
+  3d              xero <x@xero.nu>
+  4Max            Philip Menke
+  Acrobatic       Randy Ransom
+  AMC-Tubes       Lester
+  amcslder        Lester
+  Arrows          Ron Fritz
+  banner          Ryan Youck
+  Banner3-D       Merlin Greywolf
+  Basic           Craig O'Flaherty
+  Bear            Myflix
+  big             Glenn Chappell (Greek chars: Bruce Jakeway)
+  Bigfig          Glenn Chappell
+  block           Glenn Chappell
+  Blocks          Myflix
+  Bloody          patorjk
+  Bolger          Mike Rosulek
+  Broadway        (unknown)
+  broadway_kb     Myflix
+  Bubble          Glenn Chappell (Latin-2,3,4: John Cowan)
+  Bulbhead        Jef Poskanzer
+  Chunky          Chris Gill
+  Colossal        Jonathon
+  Crawford        (unknown)
+  Cyberlarge      Lennert Stock (figlet conversion: Kent Nassen)
+  Cybermedium     Lennert Stock (figlet conversion: Kent Nassen)
+  DANC4           Richard Sabey
+  dancingfont     Myflix
+  digital         Glenn Chappell (Latin-2,3,4: John Cowan)
+  Doh             Curtis Wanner
+  doom            Frans P. de Vries (based on Big by Glenn Chappell)
+  eftiwall        Michel Eftimakis
+  flowerpower     Myflix, LG Beard
+  ghost           Myflix
+  graffiti        Leigh Purdie, Tim Maggio
+  lean            Glenn Chappell
+  mini            Glenn Chappell
+  Roman           Nick Miners
+  script          Glenn Chappell
+  shadow          Glenn Chappell
+  slant           Glenn Chappell
+  small           Glenn Chappell
+  smshadow        Glenn Chappell
+  smslant         Glenn Chappell
+  standard        Glenn Chappell & Ian Chai
+  starwars        Ryan Youck (based on Big by Glenn Chappell)
+
 The FIGfont Version 2 specification (doc/papers/figfont.txt) is
 Copyright 1996, 1997 John Cowan and Paul Burton, and "may be freely
 copied and distributed."
