@@ -146,39 +146,6 @@
       (assert-matches-reference font-name text))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Reference Comparison — Generative
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(def ^:const +generative-reps+
-  "Number of random strings generated per font per category."
-  50)
-
-(def ^:const +min-length+
-  "Minimum length of generated test strings."
-  10)
-
-(def ^:const +max-length+
-  "Maximum length of generated test strings."
-  32)
-
-(def ^:private pangram
-  (vec "The Quick, Brown Fox Jumps Over The Lazy Dog!"))
-
-(def ^:private printable-ascii
-  (vec (map char (range 32 127))))
-
-(defn- random-text
-  "Returns a string of `len` characters randomly drawn from `chars`."
-  [chars len]
-  (apply str (repeatedly len #(rand-nth chars))))
-
-(defn- shuffled-text
-  "Returns a string of `len` characters sampled without replacement from
-  `chars` (shuffled)."
-  [chars len]
-  (apply str (take len (shuffle chars))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Reference Comparison — Regression Cases
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -212,6 +179,35 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Reference Comparison — Generative
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(def ^:const +generative-reps+
+  "Number of random strings generated per font per category."
+  50)
+
+(def ^:const +min-length+
+  "Minimum length of generated test strings."
+  10)
+
+(def ^:const +max-length+
+  "Maximum length of generated test strings."
+  32)
+
+(def ^:private pangram
+  (vec "The Quick, Brown Fox Jumps Over The Lazy Dog!"))
+
+(def ^:private printable-ascii
+  (vec (map char (range 32 127))))
+
+(defn- random-text
+  "Returns a string of `len` characters randomly drawn from `chars`."
+  [chars len]
+  (apply str (repeatedly len #(rand-nth chars))))
+
+(defn- shuffled-text
+  "Returns a string of `len` characters sampled without replacement from
+  `chars` (shuffled)."
+  [chars len]
+  (apply str (take len (shuffle chars))))
 
 (deftest test-generative
   (doseq [font-name (fig/all-fonts)]
