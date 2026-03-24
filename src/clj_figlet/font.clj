@@ -315,6 +315,85 @@
   (let [font (if (map? font-or-source) font-or-source (load-font font-or-source))]
     (s/valid? ::font font)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Serialization                        [figfont.txt §CREATING FIGFONTS]
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(defn- compute-full-layout
+  "Reconstructs the Full_Layout bitfield from the parsed layout fields."
+  [{:keys [h-layout h-smush-rules v-layout v-smush-rules]}]
+  (let [h-mode (case h-layout :smushing 128 :fitting 64 0)
+        v-mode (case v-layout :smushing 16384 :fitting 8192 0)
+        h-bits (reduce + 0 (map {1 1, 2 2, 3 4, 4 8, 5 16, 6 32} h-smush-rules))
+        v-bits (reduce + 0 (map {1 256, 2 512, 3 1024, 4 2048, 5 4096} v-smush-rules))]
+    (+ h-mode v-mode h-bits v-bits)))
+
+(defn- compute-old-layout
+  "Reconstructs Old_Layout from the parsed layout fields."
+  [{:keys [h-layout h-smush-rules]}]
+  (case h-layout
+    :full    -1
+    :fitting 0
+    :smushing (let [bits (reduce + 0 (map {1 1, 2 2, 3 4, 4 8, 5 16, 6 32} h-smush-rules))]
+                (if (zero? bits) 0 bits))))
+
+(defn- serialize-figchar
+  "Serializes a FIGcharacter (vector of row strings) with endmarks.
+  By convention, all rows get one endmark; the last row gets two."
+  [rows endmark]
+  (let [n (count rows)]
+    (map-indexed (fn [i row]
+                   (str row (if (= i (dec n))
+                              (str endmark endmark)
+                              (str endmark))))
+                 rows)))
+
+(defn write-font
+  "Serializes a font map to FIGfont Version 2 format and writes it to `dest`.
+  `dest` may be anything accepted by `clojure.java.io/writer` (a path string,
+  File, OutputStream, etc.).
+
+  The font is validated against the spec before writing; throws ex-info if
+  validation fails.
+
+  `comments` is an optional vector of comment lines to include after the
+  header.  If omitted, a single attribution line is written.
+
+  See figfont.txt §CREATING FIGFONTS for the file format."
+  [font dest & {:keys [comments endmark]
+                :or   {comments ["Written by clj-figlet"]
+                       endmark  \@}}]
+  (when-let [problems (validate-font font)]
+    (throw (ex-info "Font fails spec validation" {:problems problems})))
+  (let [{:keys [hardblank height baseline chars print-direction]} font
+        max-width    (reduce max 0 (for [rows (vals chars) row rows] (count row)))
+        full-layout  (compute-full-layout font)
+        old-layout   (compute-old-layout font)
+        codetag-codes (sort (remove (set required-codes) (keys chars)))
+        header       (str "flf2a" hardblank " "
+                          height " " baseline " " (+ max-width 2) " "
+                          old-layout " " (count comments) " "
+                          (or print-direction 0) " "
+                          full-layout " " (count codetag-codes))]
+    (with-open [w (io/writer dest)]
+      ;; Header
+      (.write w (str header "\n"))
+      ;; Comments
+      (doseq [line comments]
+        (.write w (str line "\n")))
+      ;; Required characters (in order, no code tags)
+      (doseq [code required-codes]
+        (let [rows (get chars code (vec (repeat height "")))]
+          (doseq [line (serialize-figchar rows endmark)]
+            (.write w (str line "\n")))))
+      ;; Code-tagged characters
+      (doseq [code codetag-codes]
+        (let [rows (get chars code)]
+          (.write w (str code "\n"))
+          (doseq [line (serialize-figchar rows endmark)]
+            (.write w (str line "\n"))))))))
+
 (defn all-fonts
   "Returns a sorted vector of bundled font names (without path or extension),
   discovered from the fonts/ directory on the classpath."

@@ -275,6 +275,7 @@ The full API:
 | `load-font` | `[source]` | Load a FIGfont file, return a font map |
 | `render` | `[font-or-name text]` | Render text; accepts a font map or a font name string |
 | `all-fonts` | `[]` | Returns sorted vector of bundled font names |
+| `write-font` | `[font dest & opts]` | Write a font map to a `.flf` file (validates first) |
 | `validate-font` | `[font]` | Validate a font map against the spec; returns nil or explain-data |
 | `valid-font?` | `[font-or-source]` | Returns true if the font has no spec violations |
 

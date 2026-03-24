@@ -74,6 +74,20 @@
   []
   (font/all-fonts))
 
+(defn write-font
+  "Serializes a font map to FIGfont Version 2 format and writes it to `dest`.
+  `dest` may be anything accepted by `clojure.java.io/writer` (a path string,
+  File, OutputStream, etc.).
+
+  The font is validated against the spec before writing; throws ex-info if
+  validation fails.
+
+  Options (as keyword args):
+    :comments  — vector of comment lines (default: [\"Written by clj-figlet\"])
+    :endmark   — endmark character (default: \\@)"
+  [font dest & opts]
+  (apply font/write-font font dest opts))
+
 (defn validate-font
   "Validates a loaded font map against the FIGfont Version 2 specification
   using clojure.spec.  Returns nil if valid, or a spec explain-data map

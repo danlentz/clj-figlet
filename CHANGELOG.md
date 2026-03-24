@@ -59,6 +59,8 @@ width for each line once the endmarks are removed"):
 - 30 new bundled fonts (46 total), including doom, script, graffiti,
   starwars, and many contributed fonts
 - `all-fonts` function returning bundled font names
+- `write-font` for serializing a font map to FIGfont Version 2 format,
+  with spec validation before writing
 - `validate-font` and `valid-font?` for checking fonts against the
   FIGfont spec using clojure.spec (header fields, required characters,
   row structure)
