@@ -192,8 +192,14 @@
   "Maximum length of generated test strings."
   32)
 
-(def ^:private pangram
-  (vec "The Quick, Brown Fox Jumps Over The Lazy Dog!"))
+(def ^:private pangrams
+  "Well-known pangrams and character-rich phrases for shuffled substrings."
+  ["The Quick Brown Fox Jumps Over The Lazy Dog!"
+   "Pack My Box With Five Dozen Liquor Jugs."
+   "How Vexingly Quick Daft Zebras Jump!"
+   "Sphinx of Black Quartz, Judge My Vow."
+   "Mr. Jock, TV Quiz PhD, Bags Few Lynx."
+   "0123456789 + @#$%^&*() = {[<>]}/|\\~"])
 
 (def ^:private printable-ascii
   (vec (map char (range 32 127))))
@@ -205,18 +211,19 @@
 
 (defn- shuffled-text
   "Returns a string of `len` characters sampled without replacement from
-  `chars` (shuffled)."
-  [chars len]
-  (apply str (take len (shuffle chars))))
+  `source` (shuffled)."
+  [source len]
+  (apply str (take len (shuffle (seq source)))))
 
 (deftest test-generative
   (doseq [font-name (fig/all-fonts)]
 
     (testing "Shuffled pangram substrings (mixed case, punctuation, spaces)"
-      (dotimes [_ +generative-reps+]
-        (let [text (shuffled-text pangram (+ +min-length+ (rand-int (- +max-length+ +min-length+))))]
-          (testing (str font-name ": pangram shuffle " (pr-str text))
-            (assert-matches-reference font-name text)))))
+      (doseq [pangram pangrams]
+        (dotimes [_ +generative-reps+]
+          (let [text (shuffled-text pangram (+ +min-length+ (rand-int (- +max-length+ +min-length+))))]
+            (testing (str font-name ": pangram shuffle " (pr-str text))
+              (assert-matches-reference font-name text))))))
 
     (testing "Random printable ASCII (full character set)"
       (dotimes [_ +generative-reps+]
